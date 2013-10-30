@@ -151,3 +151,4 @@ bar {
 }
 
 exec_always $HOME/.setupmonitors.sh
+exec_always xmodmap $HOME/.Xmodmap
