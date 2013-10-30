@@ -1,6 +1,6 @@
 Sys.setenv(R_HISTSIZE='100000')
 Sys.setenv(R_HISTFILE="~/.Rhistory")
-.Library <-paste0(Sys.getenv("HOME"),"/x86_64-pc-linux-gnu-library/2.12"
+.Library <-paste0(Sys.getenv("HOME"),"/x86_64-pc-linux-gnu-library/2.12")
 
 .Last <- function() {
   if (!any(commandArgs()=='--no-readline') && interactive()){
