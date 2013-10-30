@@ -18,8 +18,6 @@ Bundle 'gmarik/vundle'
 Bundle 'bling/vim-airline'
 Bundle 'candycode.vim'
 
-
-
 " Personal Plugins
 Bundle 'kien/ctrlp.vim'
 Bundle 'scrooloose/nerdcommenter'
@@ -27,6 +25,7 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'scrooloose/syntastic'
 Bundle 'SirVer/ultisnips'
 Bundle 'tpope/vim-unimpaired'
+Bundle 'Lokaltog/vim-easymotion'
 
 " R plugin
 "
