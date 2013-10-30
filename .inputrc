@@ -1,0 +1,3 @@
+# "\e[A" and "\e[B" being whatever your terminal uses for up & down.
+"\e[A": history-search-backward
+"\e[B": history-search-forward
