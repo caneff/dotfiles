@@ -26,7 +26,7 @@ Bundle 'scrooloose/syntastic'
 Bundle 'SirVer/ultisnips'
 Bundle 'tpope/vim-unimpaired'
 Bundle 'Lokaltog/vim-easymotion'
-
+Bundle 'wikitopian/hardmode'
 " R plugin
 "
 " "Needed for R-plugin
@@ -236,6 +236,13 @@ let g:ctrlp_custom_ignore = {
   \ 'link': 'blaze-bin\|blaze-genfiles\|blaze-google3\|blaze-out\|blaze-testlogs\|READONLY$',
   \ }
 
+" Hard Mode  -------------------------------------------------------------{{{2
+
+" Enable Hard Mode by default
+autocmd VimEnter,BufNewFile,BufReadPost * silent! call HardMode()
+
+" Toggle Hard Mode.
+nnoremap <leader>h <Esc>:call ToggleHardMode()<CR>
 
 " NERD Commenter -------------------------------------------------------------{{{2
 "
