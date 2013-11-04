@@ -16,7 +16,7 @@ if [ "$?" -ne "0" ]; then
 else
     echo "- VGA1 found, setting up 2 monitors"
     xrandr --output LVDS1 --auto
-    xrandr --output DP1 --primary --auto --right-of LVDS1
+    xrandr --output DP1 --primary --auto --below LVDS1
     monitor_number=2
 fi
  
