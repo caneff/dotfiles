@@ -1,8 +1,8 @@
 ! urxvt
 
-URxvt.font: xft:Inconsolata:size=13:antialias=true:hinting=true
+URxvt.font: xft:Inconsolata:size=11:antialias=true:hinting=true
 URxvt*background: #000000
-URxvt*foreground: #00ff00
+URxvt*foreground: #FFFFFF
 ! black
 URxvt.color0  : #000000
 URxvt.color8  : #555555
@@ -37,5 +37,3 @@ URxvt*loginShell: true
 
 ! scrollbar style - rxvt (default), plain (most compact), next, or xterm
 URxvt.scrollstyle: plain
-
-URxvt.perl-ext-common:  default,tabbed
