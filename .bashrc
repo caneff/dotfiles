@@ -36,6 +36,7 @@ xterm*|rxvt*)
     ;;
 esac
 
+export TERMINAL="rxvt-unicode"
 export EDITOR="vi -g -f"
 export INPUTRC="~/.inputrc"
 
