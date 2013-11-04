@@ -20,13 +20,18 @@ Bundle 'candycode.vim'
 
 " Personal Plugins
 Bundle 'kien/ctrlp.vim'
+Bundle 'kana/vim-textobj-function'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'scrooloose/nerdtree'
 Bundle 'scrooloose/syntastic'
 Bundle 'SirVer/ultisnips'
 Bundle 'tpope/vim-unimpaired'
+Bundle 'tpope/vim-repeat'
+Bundle 'tpope/vim-surround'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'wikitopian/hardmode'
+Bundle 'kana/vim-textobj-user'
+Bundle 'Julian/vim-textobj-variable-segment'
 " R plugin
 "
 " "Needed for R-plugin
@@ -143,7 +148,8 @@ set wrap
 set linebreak
 
 "Esc is too far away
-imap ;; <Esc>
+inoremap jk <Esc>
+inoremap <Esc> <nop>
 
 set wildmode=longest,list,full  " Completion modes for wildcard expansion
 set hlsearch                    " Highlight previous search results
@@ -152,7 +158,6 @@ set showmatch                   " Show matching braces / brackets
 set title                       " Let vim change my tab/window title
 set infercase                   " when searching, decide if case-sensitive based on if you include uppercase
 set ignorecase smartcase
-set ttimeoutlen=10      " milliseconds awaited for a multi-stroke key combination to comlete
 set expandtab
 set tabstop=2
 set nowrap
@@ -272,6 +277,10 @@ let g:vimrplugin_screenplugin = 0
 " Don't expand _ into <-.
 let vimrplugin_underscore = 0
 
+" Enable syntax folding.
+let r_syntax_folding = 1
+autocmd Filetype r setlocal foldnestmax=1
+
 " Don't line things up with opening braces.
 let r_indent_align_args = 0
 
@@ -295,6 +304,8 @@ let g:ycm_filepath_completion_use_working_dir = 1
 
 " Add programming language keywords to the autocomplete list.
 let g:ycm_seed_identifiers_with_syntax = 1
+
+let g:ycm_key_list_select_completion = ['<TAB>', '<Down>', '<Enter>']
 
 " Vimscript ------------------------------------------------------------{{{2
 augroup filetype_vim
