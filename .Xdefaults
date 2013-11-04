@@ -33,7 +33,7 @@ URxvt*letterSpace: -1
 URxvt.perl-ext-common : default,matcher
 URxvt.urlLauncher     : google-chrome
 URxvt.matcher.button  : 1
-
+URxvt*loginShell: true
 
 ! scrollbar style - rxvt (default), plain (most compact), next, or xterm
 URxvt.scrollstyle: plain
