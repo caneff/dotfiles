@@ -28,10 +28,13 @@ Bundle 'SirVer/ultisnips'
 Bundle 'tpope/vim-unimpaired'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
+Bundle 'tpope/vim-eunuch'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'wikitopian/hardmode'
 Bundle 'kana/vim-textobj-user'
 Bundle 'Julian/vim-textobj-variable-segment'
+Bundle 'DeleteTrailingWhitespace'
+Bundle 'oblitum/rainbow'
 " R plugin
 "
 " "Needed for R-plugin
@@ -72,6 +75,9 @@ nnoremap ZH zH
 
 " Let vim hide unsaved buffers.
 set hidden
+
+set equalalways
+autocmd VimResized * if &equalalways | wincmd = | endif
 
 " Text formatting ------------------------------------------------------{{{2
 
@@ -163,7 +169,12 @@ set tabstop=2
 set nowrap
 set softtabstop=2
 set list                " show the non-printing characters in 'listchars'
-execute "set listchars=trail:".nr2char(9679).",tab:".nr2char(187).nr2char(183).",extends:".nr2char(187).",precedes:".nr2char(171)
+
+let &listchars = "tab:\u21e5 ,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u00b7"
+
+highlight NonText guifg=#00ff00
+highlight SpecialKey guifg=#00ff00
+
 
 au BufEnter * silent! lcd %:p:h
 
@@ -259,6 +270,9 @@ let g:NERDSpaceDelims = 1
 " NERD shortcut
 nnoremap <Leader>/ :NERDTreeToggle<CR>
 
+" Rainbow --------------------------------------------------------------{{{2
+
+let g:rainbow_active = 1
 " Ultisnip  -------------------------------------------------------------{{{2
 "
 " Make ultisnip keys not conflict with YCM
@@ -293,7 +307,7 @@ let g:ycm_complete_in_comments_and_strings = 1
 
 " Pop up a preview window with more info about the selected autocomplete option.
 let g:ycm_add_preview_to_completeopt = 1
-let g:ycm_autoclose_preview_window_after_completion = 0
+let g:ycm_autoclose_preview_window_after_completion = 1
 
 " Start autocompleting right away, after a single character!
 let g:ycm_min_num_of_chars_for_completion = 1
