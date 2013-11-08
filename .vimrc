@@ -19,6 +19,8 @@ Bundle 'bling/vim-airline'
 Bundle 'candycode.vim'
 
 " Personal Plugins
+Bundle 'bufexplorer.zip'
+Bundle 'matchit.zip'
 Bundle 'kien/ctrlp.vim'
 Bundle 'kana/vim-textobj-function'
 Bundle 'scrooloose/nerdcommenter'
@@ -29,12 +31,13 @@ Bundle 'tpope/vim-unimpaired'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
 Bundle 'tpope/vim-eunuch'
-Bundle 'Lokaltog/vim-easymotion'
+Bundle 'haya14busa/vim-easymotion'
 Bundle 'wikitopian/hardmode'
 Bundle 'kana/vim-textobj-user'
 Bundle 'Julian/vim-textobj-variable-segment'
 Bundle 'DeleteTrailingWhitespace'
 Bundle 'oblitum/rainbow'
+Bundle 'vim-scripts/argtextobj.vim'
 " R plugin
 "
 " "Needed for R-plugin
@@ -170,8 +173,12 @@ set nowrap
 set softtabstop=2
 set list                " show the non-printing characters in 'listchars'
 
-let &listchars = "tab:\u21e5 ,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u00b7"
-
+" Use the same symbols as TextMate for tabstops and EOLs
+ " set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
+  "if !has('win32') && (&termencoding ==# 'utf-8' || &encoding ==# 'utf-8')
+    let &listchars = "tab:\u21e5 ,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u00b7"
+  " endif
+" endif
 highlight NonText guifg=#00ff00
 highlight SpecialKey guifg=#00ff00
 
@@ -228,7 +235,6 @@ function FormatGoProgram()
 endfunction
 au BufEnter *.go map <C-o> :call FormatGoProgram()<CR>
 "autocmd BufWritePre *.go :silent call FormatGoProgram()
-autocmd FileType go autocmd BufWritePre <buffer> execute "normal! mz:mkview\<esc>:silent call FormatGoProgram()\<esc>:loadview\<esc>`z"
 au BufLeave *.go unmap <C-o>
 
 autocmd Filetype go setlocal foldmethod=syntax
@@ -252,6 +258,27 @@ let g:ctrlp_custom_ignore = {
   \ 'link': 'blaze-bin\|blaze-genfiles\|blaze-google3\|blaze-out\|blaze-testlogs\|READONLY$',
   \ }
 
+" DeleteTrailingWhitespace -------------------------------------------------------------{{{2
+
+let g:DeleteTrailingWhitespace = 1
+let g:DeleteTrailingWhitespace_Action = 'delete'
+
+
+" Easymotion-------------------------------------------------------------{{{2
+
+let g:EasyMotion_leader_key = '<Leader>'
+onoremap <SPACE> :call EasyMotion#S(0, 2)<CR>
+nnoremap <SPACE> :call EasyMotion#S(0, 2)<CR>
+vnoremap <SPACE> :<C-U>call EasyMotion#S(1, 2)<CR>
+
+"let g:EasyMotion_special_select_phrase = 1
+" let g:EasyMotion_special_select_line = 1
+let g:EasyMotion_smartcase = 1
+let g:EasyMotion_skipfoldedline = 0
+" let g:EasyMotion_special_mapping_l = 'l'
+" let g:EasyMotion_special_mapping_p = 'p'
+
+
 " Hard Mode  -------------------------------------------------------------{{{2
 
 " Enable Hard Mode by default
@@ -259,6 +286,7 @@ autocmd VimEnter,BufNewFile,BufReadPost * silent! call HardMode()
 
 " Toggle Hard Mode.
 nnoremap <leader>h <Esc>:call ToggleHardMode()<CR>
+let g:HardMode_level='wannabe'
 
 " NERD Commenter -------------------------------------------------------------{{{2
 "
@@ -286,7 +314,6 @@ let vimrplugin_conqueplugin = 0
 let vimrplugin_conquevsplit = 0
 
 let vimrplugin_term_cmd = "gnome-terminal --title R --geometry=100x50-20+0 -e"
-let g:vimrplugin_screenplugin = 0
 
 " Don't expand _ into <-.
 let vimrplugin_underscore = 0
