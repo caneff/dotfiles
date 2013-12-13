@@ -19,25 +19,41 @@ Bundle 'bling/vim-airline'
 Bundle 'candycode.vim'
 
 " Personal Plugins
-Bundle 'bufexplorer.zip'
-Bundle 'matchit.zip'
-Bundle 'kien/ctrlp.vim'
-Bundle 'kana/vim-textobj-function'
-Bundle 'scrooloose/nerdcommenter'
-Bundle 'scrooloose/nerdtree'
-Bundle 'scrooloose/syntastic'
+Bundle 'DeleteTrailingWhitespace'
 Bundle 'SirVer/ultisnips'
-Bundle 'tpope/vim-unimpaired'
+Bundle 'bufexplorer.zip'
+Bundle 'haya14busa/vim-easymotion'
+Bundle 'kana/vim-arpeggio'
+Bundle 'kien/ctrlp.vim'
+Bundle 'majutsushi/tagbar'
+Bundle 'matchit.zip'
+Bundle 'oblitum/rainbow'
+Bundle 'scrooloose/syntastic'
+Bundle 'tpope/vim-abolish'
+Bundle 'tpope/vim-commentary'
+Bundle 'tpope/vim-endwise'
+Bundle 'tpope/vim-eunuch'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
-Bundle 'tpope/vim-eunuch'
-Bundle 'haya14busa/vim-easymotion'
+Bundle 'tpope/vim-unimpaired'
 Bundle 'wikitopian/hardmode'
+Bundle 'xolox/vim-easytags'
+Bundle 'xolox/vim-misc'
+
+" " Text Objects
+" Needed for others
 Bundle 'kana/vim-textobj-user'
+
+Bundle 'Julian/vim-textobj-brace'
 Bundle 'Julian/vim-textobj-variable-segment'
-Bundle 'DeleteTrailingWhitespace'
-Bundle 'oblitum/rainbow'
-Bundle 'vim-scripts/argtextobj.vim'
+Bundle 'kana/vim-textobj-entire'
+Bundle 'kana/vim-textobj-fold'
+Bundle 'kana/vim-textobj-indent'
+Bundle 'kana/vim-textobj-line'
+Bundle 'kana/vim-textobj-syntax'
+Bundle 'sgur/vim-textobj-parameter'
+Bundle 'thinca/vim-textobj-between'
+
 " R plugin
 "
 " "Needed for R-plugin
@@ -79,6 +95,7 @@ nnoremap ZH zH
 " Let vim hide unsaved buffers.
 set hidden
 
+" Resize splits when a new split gets made. Good with tiling WMs.
 set equalalways
 autocmd VimResized * if &equalalways | wincmd = | endif
 
@@ -86,9 +103,6 @@ autocmd VimResized * if &equalalways | wincmd = | endif
 
 " 80 characters helps readability.
 set textwidth=80
-
-" Highlight lines which are too long
-set colorcolumn=+1
 
 " Experience shows: tabs *occasionally* cause problems; spaces *never* do.
 " Besides, vim is smart enough to make it "feel like" real tabs.
@@ -104,11 +118,14 @@ set fo +=q  " Let me format comments manually.
 set fo +=r  " Auto-continue comments if I'm still typing away in insert mode,
 set fo -=o  "  but not if I'm coming from normal mode (I find this annoying).
 set fo +=n  " Handle numbered lists properly: a lifesaver when writing emails!
+set fo +=j  " Be smart about comment leaders when joining lines.
 
 " Almost every filetype is better with autoindent.
 " (Let filetype-specific settings handle the rest.)
 set autoindent
 
+" I have no idea why you would want this.
+set conceallevel=0
 
 " Folding --------------------------------------------------------------{{{2
 "
@@ -122,26 +139,32 @@ nnoremap ZK zkzMzv
 " Disable ZZ quit command. Use :qa instead
 nnoremap ZZ <Nop>
 
+" Show 1 column of folding info
 set foldcolumn=1
+
 " Miscellaneous settings -----------------------------------------------{{{2
 
 " When would I ever *not* want these?
 set number   " Line numbers
 syntax on    " syntax highlighting
 set showcmd  " Show partial commands as you type
-set cmdheight=3
 
+" Occasionally useful, but mainly too annoying.
+set nohlsearch
+
+set cmdheight=3 " I like more room in my command window for errors and the like
 
 set colorcolumn=81,82
 
 " Command line history: the default is just 20 lines!
-set history=500
+set history=1000
 
 " Disable the bell
 set noeb vb t_vb=
 
 set background=dark
 colorscheme candycode
+" colorscheme vividchalk
 
 " Don't litter directories with swap files; stick them all here.
 set directory=~/.vimswp
@@ -149,6 +172,7 @@ set directory=~/.vimswp
 " Put a statusline for *every* window, *always*.
 set laststatus=2
 
+" Show line and column number.
 set ruler
 
 " Soft-wrapping is more readable than scrolling...
@@ -158,10 +182,11 @@ set linebreak
 
 "Esc is too far away
 inoremap jk <Esc>
+"call arpeggio#load()
+"Arpeggio inoremap jk <Esc>
 inoremap <Esc> <nop>
 
 set wildmode=longest,list,full  " Completion modes for wildcard expansion
-set hlsearch                    " Highlight previous search results
 set showmode                    " Show the mode you're currently in
 set showmatch                   " Show matching braces / brackets
 set title                       " Let vim change my tab/window title
@@ -173,16 +198,12 @@ set nowrap
 set softtabstop=2
 set list                " show the non-printing characters in 'listchars'
 
-" Use the same symbols as TextMate for tabstops and EOLs
- " set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
-  "if !has('win32') && (&termencoding ==# 'utf-8' || &encoding ==# 'utf-8')
-    let &listchars = "tab:\u21e5 ,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u00b7"
-  " endif
-" endif
+" Set characters for trailing spaces and for tabs. Make their color lime green
+let &listchars = "tab:\u21e5 ,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u00b7"
 highlight NonText guifg=#00ff00
 highlight SpecialKey guifg=#00ff00
 
-
+" cd to the current directory for each file
 au BufEnter * silent! lcd %:p:h
 
 " Turn off tab highlighting in go
@@ -208,12 +229,30 @@ else
   endif
 endif
 
+" Save every time vim loses focus.
+au FocusLost * :wa
+
+" Navigate windows easier
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" Open a new vertical split and move over to it
+nnoremap <Leader>v <C-w>v<C-w>l
+
+" The case changing always gets me in trouble in visual mode.
+vnoremap u <Nop>
+vnoremap U <Nop>
+vnoremap ~ <Nop>
+
+" Add a shortcut to enter a newline and go right back to normal mode.
+nnoremap K i<cr><esc>
+
 " Go Stuff ---------------------------------------------------------{{{1
 "
 " 1. General stuff.
 au BufEnter *.go set shiftwidth=2 noexpandtab tabstop=2
-au BufEnter *.go map <F2> :cprev<CR>
-au BufEnter *.go map <F3> :cnext<CR>
 
 " 2. Map gofmt to ^O.  Walk through any syntax errors caught by gofmt.
 function FormatGoProgram()
@@ -237,8 +276,10 @@ au BufEnter *.go map <C-o> :call FormatGoProgram()<CR>
 "autocmd BufWritePre *.go :silent call FormatGoProgram()
 au BufLeave *.go unmap <C-o>
 
+" Only fold the first level for go, as much isn't nested.
 autocmd Filetype go setlocal foldmethod=syntax
 autocmd Filetype go setlocal foldnestmax=1
+
 
 " Plugin settings ---------------------------------------------------------{{{1
 
@@ -257,6 +298,11 @@ let g:ctrlp_custom_ignore = {
   \ 'file': '\.exe$\|\.so$\|\.dll$',
   \ 'link': 'blaze-bin\|blaze-genfiles\|blaze-google3\|blaze-out\|blaze-testlogs\|READONLY$',
   \ }
+
+" Show hidden files.
+let g:ctrlp_show_hidden = 1
+
+let g:ctrlp_follow_symlinks = 1
 
 " DeleteTrailingWhitespace -------------------------------------------------------------{{{2
 
@@ -293,14 +339,16 @@ let g:HardMode_level='wannabe'
 " Have a space separate the comment character and the text.
 let g:NERDSpaceDelims = 1
 
-" NERD Tree -------------------------------------------------------------{{{2
-"
-" NERD shortcut
-nnoremap <Leader>/ :NERDTreeToggle<CR>
+" Syntastic ------------------------------------------------------------{{{2
+
+" Not sure why I'd ever want my syntax checked when I'm quitting...
+let g:syntastic_check_on_wq = 0
 
 " Rainbow --------------------------------------------------------------{{{2
 
-let g:rainbow_active = 1
+au FileType c,cpp,objc,objcpp,go,r,vim,szl,java call rainbow#load()
+
+"au FileType blazebuild call rainbow#load()
 " Ultisnip  -------------------------------------------------------------{{{2
 "
 " Make ultisnip keys not conflict with YCM
@@ -335,6 +383,7 @@ let g:ycm_complete_in_comments_and_strings = 1
 " Pop up a preview window with more info about the selected autocomplete option.
 let g:ycm_add_preview_to_completeopt = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_autoclose_preview_window_after_insertion = 1
 
 " Start autocompleting right away, after a single character!
 let g:ycm_min_num_of_chars_for_completion = 1
@@ -362,3 +411,13 @@ if filereadable(expand("~/.vimrc_local"))
   source ~/.vimrc_local
 endif
 
+let g:tagbar_type_go = {
+    \ 'ctagstype': 'go',
+    \ 'kinds' : [
+        \'p:package',
+        \'f:function',
+        \'v:variables',
+        \'t:type',
+        \'c:const'
+    \]
+\}

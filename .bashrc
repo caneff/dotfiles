@@ -19,6 +19,9 @@ fi
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+# expand aliased paths when tab completing
+shopt -s direxpand
+
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
 
