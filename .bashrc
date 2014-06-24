@@ -58,6 +58,23 @@ if [ -f ~/.bash_aliases ]; then
     source ~/.bash_aliases
 fi
 
+
+
+
+export JAR=/usr/local/buildtools/java/jdk-64/bin/jar
+export JAVA=/usr/local/buildtools/java/jdk-64/bin/java
+export JAVAC=/usr/local/buildtools/java/jdk-64/bin/javac
+export JAVAH=/usr/local/buildtools/java/jdk-64/bin/javah
+export JAVA_HOME=/usr/local/buildtools/java/jdk-64/jre
+export JAVA_LD_LIBRARY_PATH=${JAVA_HOME}/lib/amd64/server:${JAVA_HOME}/lib/amd64
+export JAVA_LIBS="-L${JAVA_HOME}/lib/amd64/server -L${JAVA_HOME}/lib/amd64 -L${JAVA_HOME}/../lib/amd64 -ljvm"
+export JAVA_CPPFLAGS="-I${JAVA_HOME}/../include -I${JAVA_HOME}/../include/linux"
+export R_JAVA_LD_LIBRARY_PATH=${JAVA_HOME}/lib/amd64/server:${JAVA_HOME}/lib/amd64
+
+
+
+
+
 # Stuff for specific configs (like work stuff).
 if [ -f ~/.bashrc_local ]; then
     source ~/.bashrc_local
@@ -65,6 +82,8 @@ fi
 if [ -f ~/.bash_aliases_local ]; then
     source ~/.bash_aliases_local
 fi
+
+
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -77,3 +96,10 @@ fi
 LONG_RUNNING_PREEXEC_LOCATION=$HOME/git/undistract-me/preexec.bash
 . ~/git/undistract-me/long-running.bash
 notify_when_long_running_commands_finish_install
+
+
+
+
+
+
+

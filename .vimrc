@@ -1,4 +1,4 @@
-" Vundle -- the Right Way to manage Vim plugins ---------------------------{{{1
+" Vundle -- the Right Way to manage Vim plugins ---------------------------{{{1:
 "
 " Stolen mainly from chiphogg/dotfiles
 "
@@ -6,60 +6,60 @@
 set nocompatible               " be iMproved
 filetype off                   " required!
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
 " let Vundle manage Vundle ---------------------------------------------{{{2
 " Required
-Bundle 'gmarik/vundle'
+Plugin 'gmarik/Vundle.vim'
 " ----------------------------------------------------------------------}}}2
 
 " Vim enhancements
-Bundle 'bling/vim-airline'
-Bundle 'candycode.vim'
+Plugin 'bling/vim-airline'
+Plugin 'candycode.vim'
 
 " Personal Plugins
-Bundle 'DeleteTrailingWhitespace'
-Bundle 'SirVer/ultisnips'
-Bundle 'bufexplorer.zip'
-Bundle 'haya14busa/vim-easymotion'
-Bundle 'kana/vim-arpeggio'
-Bundle 'kien/ctrlp.vim'
-Bundle 'majutsushi/tagbar'
-Bundle 'matchit.zip'
-Bundle 'oblitum/rainbow'
-Bundle 'scrooloose/syntastic'
-Bundle 'tpope/vim-abolish'
-Bundle 'tpope/vim-commentary'
-Bundle 'tpope/vim-endwise'
-Bundle 'tpope/vim-eunuch'
-Bundle 'tpope/vim-repeat'
-Bundle 'tpope/vim-surround'
-Bundle 'tpope/vim-unimpaired'
-Bundle 'wikitopian/hardmode'
-Bundle 'xolox/vim-easytags'
-Bundle 'xolox/vim-misc'
+Plugin 'DeleteTrailingWhitespace'
+Plugin 'SirVer/ultisnips'
+Plugin 'bufexplorer.zip'
+Plugin 'lokaltog/vim-easymotion'
+Plugin 'kana/vim-arpeggio'
+Plugin 'kien/ctrlp.vim'
+Plugin 'majutsushi/tagbar'
+Plugin 'matchit.zip'
+Plugin 'oblitum/rainbow'
+Plugin 'scrooloose/syntastic'
+Plugin 'tpope/vim-abolish'
+Plugin 'tpope/vim-commentary'
+Plugin 'tpope/vim-endwise'
+Plugin 'tpope/vim-eunuch'
+Plugin 'tpope/vim-repeat'
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-unimpaired'
+Plugin 'wikitopian/hardmode'
+Plugin 'xolox/vim-misc'
 
 " " Text Objects
 " Needed for others
-Bundle 'kana/vim-textobj-user'
+Plugin 'kana/vim-textobj-user'
 
-Bundle 'Julian/vim-textobj-brace'
-Bundle 'Julian/vim-textobj-variable-segment'
-Bundle 'kana/vim-textobj-entire'
-Bundle 'kana/vim-textobj-fold'
-Bundle 'kana/vim-textobj-indent'
-Bundle 'kana/vim-textobj-line'
-Bundle 'kana/vim-textobj-syntax'
-Bundle 'sgur/vim-textobj-parameter'
-Bundle 'thinca/vim-textobj-between'
+Plugin 'Julian/vim-textobj-brace'
+Plugin 'Julian/vim-textobj-variable-segment'
+Plugin 'kana/vim-textobj-entire'
+Plugin 'kana/vim-textobj-fold'
+Plugin 'kana/vim-textobj-indent'
+Plugin 'kana/vim-textobj-line'
+Plugin 'kana/vim-textobj-syntax'
+Plugin 'sgur/vim-textobj-parameter'
+Plugin 'thinca/vim-textobj-between'
 
 " R plugin
 "
 " "Needed for R-plugin
-Bundle 'jalvesaq/VimCom'
-Bundle 'jcfaria/Vim-R-plugin'
+Plugin 'jalvesaq/VimCom'
+Plugin 'jcfaria/Vim-R-plugin'
 
+call vundle#end()
 filetype plugin indent on    " required for vundle (and generally a good idea!)
 
 " Basic settings ----------------------------------------------------------{{{1
@@ -211,7 +211,7 @@ au BufRead,BufNewFile *.go set nolist
 
 " Installation instructions:
 " https://powerline.readthedocs.org/en/latest/installation/linux.html#font-installation
-set guifont=Inconsolata\ for\ Powerline\ 13
+set guifont=Inconsolata\ for\ Powerline\ 15
 
 let g:omni_sql_no_default_maps = 1
 
@@ -247,34 +247,18 @@ vnoremap U <Nop>
 vnoremap ~ <Nop>
 
 " Add a shortcut to enter a newline and go right back to normal mode.
-nnoremap K i<cr><esc>
+nnoremap K li<cr><esc>
 
 " Go Stuff ---------------------------------------------------------{{{1
 "
 " 1. General stuff.
 au BufEnter *.go set shiftwidth=2 noexpandtab tabstop=2
 
-" 2. Map gofmt to ^O.  Walk through any syntax errors caught by gofmt.
-function FormatGoProgram()
-  let cursor_position = getpos(".")
-  silent exe "%!/usr/lib/google-golang/bin/gofmt 2>/tmp/go.$USER.err"
-  if v:shell_error
-    undo
-  endif
-  call setpos('.', cursor_position)
-  silent exe "!sed --in-place -n 's/<standard input>/%/p' /tmp/go.$USER.err"
+" Set Fmt to use goimports
+let g:gofmt_command='goimports'
 
-  let w = winnr()       " Remember window number.
-  cf /tmp/go.$USER.err  " Pick up any errors from this file.
-  cwindow 3             " Open a 3-line window for errors, or close it if none.
-  " Switch back to the original window.
-  exe w . "wincmd w"
-  redraw!
-  echo "Formatted"
-endfunction
-au BufEnter *.go map <C-o> :call FormatGoProgram()<CR>
-"autocmd BufWritePre *.go :silent call FormatGoProgram()
-au BufLeave *.go unmap <C-o>
+" Run gofmt before saving file
+" autocmd BufWritePre <buffer> :keepjumps Fmt
 
 " Only fold the first level for go, as much isn't nested.
 autocmd Filetype go setlocal foldmethod=syntax
@@ -312,10 +296,9 @@ let g:DeleteTrailingWhitespace_Action = 'delete'
 
 " Easymotion-------------------------------------------------------------{{{2
 
-let g:EasyMotion_leader_key = '<Leader>'
-onoremap <SPACE> :call EasyMotion#S(0, 2)<CR>
-nnoremap <SPACE> :call EasyMotion#S(0, 2)<CR>
-vnoremap <SPACE> :<C-U>call EasyMotion#S(1, 2)<CR>
+map <Leader> <Plug>(easymotion-prefix)
+omap <SPACE> <Plug>(easymotion-s)
+nmap <SPACE> <Plug>(easymotion-s)
 
 "let g:EasyMotion_special_select_phrase = 1
 " let g:EasyMotion_special_select_line = 1
@@ -339,16 +322,17 @@ let g:HardMode_level='wannabe'
 " Have a space separate the comment character and the text.
 let g:NERDSpaceDelims = 1
 
+" Rainbow --------------------------------------------------------------{{{2
+au FileType c,cpp,objc,objcpp,go,r,vim,szl,java call rainbow#load()
 " Syntastic ------------------------------------------------------------{{{2
 
 " Not sure why I'd ever want my syntax checked when I'm quitting...
 let g:syntastic_check_on_wq = 0
 
-" Rainbow --------------------------------------------------------------{{{2
+" Fix goroot complaints
+let g:syntastic_go_checkers = ['gofmt', 'golint', 'gotype', 'govet']
 
-au FileType c,cpp,objc,objcpp,go,r,vim,szl,java call rainbow#load()
 
-"au FileType blazebuild call rainbow#load()
 " Ultisnip  -------------------------------------------------------------{{{2
 "
 " Make ultisnip keys not conflict with YCM
@@ -370,9 +354,8 @@ let vimrplugin_underscore = 0
 let r_syntax_folding = 1
 autocmd Filetype r setlocal foldnestmax=1
 
-" Don't line things up with opening braces.
-let r_indent_align_args = 0
-
+" Line things up with opening braces.
+let r_indent_align_args = 1
 
 " YouCompleteMe  -------------------------------------------------------------{{{2
 
@@ -421,3 +404,4 @@ let g:tagbar_type_go = {
         \'c:const'
     \]
 \}
+
