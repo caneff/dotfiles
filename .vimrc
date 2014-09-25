@@ -23,11 +23,11 @@ Plugin 'DeleteTrailingWhitespace'
 Plugin 'SirVer/ultisnips'
 Plugin 'bufexplorer.zip'
 Plugin 'lokaltog/vim-easymotion'
-Plugin 'kana/vim-arpeggio'
+" Plugin 'kana/vim-arpeggio'
 Plugin 'kien/ctrlp.vim'
 Plugin 'majutsushi/tagbar'
 Plugin 'matchit.zip'
-Plugin 'oblitum/rainbow'
+" Plugin 'oblitum/rainbow'
 Plugin 'scrooloose/syntastic'
 Plugin 'tpope/vim-abolish'
 Plugin 'tpope/vim-commentary'
@@ -38,6 +38,8 @@ Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-unimpaired'
 Plugin 'wikitopian/hardmode'
 Plugin 'xolox/vim-misc'
+Plugin 'fatih/vim-go'
+Plugin 'nsf/gocode', {'rtp': 'vim/'}
 
 " " Text Objects
 " Needed for others
@@ -77,18 +79,15 @@ nnoremap <silent> <Leader>qwer :confirm qa<CR>
 " Y should work like D and C.
 nnoremap Y y$
 
-
 " <C-U> can delete text which undo can't recover. These mappings prevent that.
 " http://vim.wikia.com/wiki/Recover_from_accidental_Ctrl-U
 inoremap <C-U> <C-G>u<C-U>
 inoremap <C-W> <C-G>u<C-W>
 
-
 " Some filetypes work best with 'nowrap'.  Vim moves left and right using zL
 " and zH, but this is awkward.  ZL and ZH are easier alternatives.
 nnoremap ZL zL
 nnoremap ZH zH
-
 
 " Windows, tabs, and buffers -------------------------------------------{{{2
 
@@ -108,7 +107,6 @@ set textwidth=80
 " Besides, vim is smart enough to make it "feel like" real tabs.
 set tabstop=2 softtabstop=2 shiftwidth=2 expandtab smarttab
 
-
 " Format options (full list at ":help fo-table"; see also ":help 'fo'")
 " Change between += and -= to toggle an option
 set fo -=t  " Don't auto-wrap text...
@@ -119,6 +117,7 @@ set fo +=r  " Auto-continue comments if I'm still typing away in insert mode,
 set fo -=o  "  but not if I'm coming from normal mode (I find this annoying).
 set fo +=n  " Handle numbered lists properly: a lifesaver when writing emails!
 set fo +=j  " Be smart about comment leaders when joining lines.
+
 
 " Almost every filetype is better with autoindent.
 " (Let filetype-specific settings handle the rest.)
@@ -157,14 +156,13 @@ set cmdheight=3 " I like more room in my command window for errors and the like
 set colorcolumn=81,82
 
 " Command line history: the default is just 20 lines!
-set history=1000
+set history=10000
 
 " Disable the bell
 set noeb vb t_vb=
 
 set background=dark
 colorscheme candycode
-" colorscheme vividchalk
 
 " Don't litter directories with swap files; stick them all here.
 set directory=~/.vimswp
@@ -182,9 +180,13 @@ set linebreak
 
 "Esc is too far away
 inoremap jk <Esc>
-"call arpeggio#load()
-"Arpeggio inoremap jk <Esc>
 inoremap <Esc> <nop>
+
+" gvim options
+set guioptions-=m  "remove menu bar
+set guioptions-=r  "remove right-hand scroll bar
+set guioptions-=L  "remove left-hand scroll bar
+set guioptions-=T  "remove toolbar
 
 set wildmode=longest,list,full  " Completion modes for wildcard expansion
 set showmode                    " Show the mode you're currently in
@@ -211,7 +213,7 @@ au BufRead,BufNewFile *.go set nolist
 
 " Installation instructions:
 " https://powerline.readthedocs.org/en/latest/installation/linux.html#font-installation
-set guifont=Inconsolata\ for\ Powerline\ 15
+set guifont=Inconsolata\ for\ Powerline\ 16
 
 let g:omni_sql_no_default_maps = 1
 
@@ -249,6 +251,28 @@ vnoremap ~ <Nop>
 " Add a shortcut to enter a newline and go right back to normal mode.
 nnoremap K li<cr><esc>
 
+" An attempt to format R code faster
+function FixR()
+  %s/,\([^ ]\)/, \1/gec
+  %s/\([^ ]\)+/\1 +/gec
+  %s/+\([^ ]\)/+ \1/gec
+  %s/\([^ <(]\)-/\1 -/gec
+  %s/ -\([^ ]\)/ - \1/gec
+  %s/\([^ ]\)\*/\1 */gec
+  %s/\*\([^ ]\)/* \1/gec
+  %s/\([^ ]\):=/\1 :=/gec
+  %s/:=\([^ ]\)/:= \1/gec
+  %s/\([^ ]\)&/\1 &/gec
+  %s/&\([^ ]\)/& \1/gec
+  %s/\([^ ]\)==/\1 ==/gec
+  %s/==\([^ ]\)/== \1/gec
+  %s/\([^ ]\)||/\1 ||/gec
+  %s/||\([^ ]\)/|| \1/gec
+  %s/\([^ ]\)|/\1 |/gec
+  %s/|\([^ ]\)/| \1/gec
+endfunction
+
+nnoremap ,fr :call FixR()<CR>
 " Go Stuff ---------------------------------------------------------{{{1
 "
 " 1. General stuff.
@@ -323,7 +347,7 @@ let g:HardMode_level='wannabe'
 let g:NERDSpaceDelims = 1
 
 " Rainbow --------------------------------------------------------------{{{2
-au FileType c,cpp,objc,objcpp,go,r,vim,szl,java call rainbow#load()
+" au FileType c,cpp,objc,objcpp,go,r,vim,szl,java call rainbow#load()
 " Syntastic ------------------------------------------------------------{{{2
 
 " Not sure why I'd ever want my syntax checked when I'm quitting...
@@ -342,13 +366,11 @@ let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
 
 " Vim-R-Plugin  -------------------------------------------------------------{{{2
 "
-let vimrplugin_conqueplugin = 0
-let vimrplugin_conquevsplit = 0
 
-let vimrplugin_term_cmd = "gnome-terminal --title R --geometry=100x50-20+0 -e"
+let vimrplugin_show_args = 1
 
 " Don't expand _ into <-.
-let vimrplugin_underscore = 0
+let vimrplugin_assign = 0
 
 " Enable syntax folding.
 let r_syntax_folding = 1
@@ -365,17 +387,17 @@ let g:ycm_complete_in_comments_and_strings = 1
 
 " Pop up a preview window with more info about the selected autocomplete option.
 let g:ycm_add_preview_to_completeopt = 1
-let g:ycm_autoclose_preview_window_after_completion = 1
-let g:ycm_autoclose_preview_window_after_insertion = 1
+" let g:ycm_autoclose_preview_window_after_completion = 1
+" let g:ycm_autoclose_preview_window_after_insertion = 1
 
 " Start autocompleting right away, after a single character!
-let g:ycm_min_num_of_chars_for_completion = 1
+" let g:ycm_min_num_of_chars_for_completion = 1
 
-" This gives me nice autocompletion for C++ #include's if I change vim's working
-" directory to the project root.
+" " This gives me nice autocompletion for C++ #include's if I change vim's working
+" " directory to the project root.
 let g:ycm_filepath_completion_use_working_dir = 1
 
-" Add programming language keywords to the autocomplete list.
+" " Add programming language keywords to the autocomplete list.
 let g:ycm_seed_identifiers_with_syntax = 1
 
 let g:ycm_key_list_select_completion = ['<TAB>', '<Down>', '<Enter>']
@@ -394,14 +416,14 @@ if filereadable(expand("~/.vimrc_local"))
   source ~/.vimrc_local
 endif
 
-let g:tagbar_type_go = {
-    \ 'ctagstype': 'go',
-    \ 'kinds' : [
-        \'p:package',
-        \'f:function',
-        \'v:variables',
-        \'t:type',
-        \'c:const'
-    \]
-\}
+" let g:tagbar_type_go = {
+"     \ 'ctagstype': 'go',
+"     \ 'kinds' : [
+"         \'p:package',
+"         \'f:function',
+"         \'v:variables',
+"         \'t:type',
+"         \'c:const'
+"     \]
+" \}
 

@@ -1,22 +1,48 @@
 .Library <-paste0(Sys.getenv("HOME"),"/x86_64-pc-linux-gnu-library/2.12")
 
-Sys.setenv(R_HISTSIZE='100000')
+Sys.setenv(R_HISTSIZE='1000000')
 Sys.setenv(R_HISTFILE="/usr/local/google/home/caneff/.Rhistory")
 
+options(max.print=10000)
 
-# auto width adjustment
-.adjustWidth <- function(...){
-  try(options(width=Sys.getenv("COLUMNS")),silent=TRUE)
-  TRUE
+# # auto width adjustment
+# .adjustWidth <- function(...){
+#   try(options(width=Sys.getenv("COLUMNS")),silent=TRUE)
+#   TRUE
+# }
+# .adjustWidthCallBack <- addTaskCallback(.adjustWidth)
+
+if(interactive()){
+  # Get startup messages of three packages and set Vim as R pager:
+  options(setwidth.verbose = 1,
+          vimcom.verbose = 1)
+          # pager = "vimrpager")
+
+  # # Use the text based web browser w3m to navigate through R docs:
+  # if(Sys.getenv("TMUX") != "")
+  #   options(browser="~/bin/vimrw3mbrowser",
+  #           help_type = "html")
+
+  # Use either Vim or GVim as text editor for R:
+  if(nchar(Sys.getenv("DISPLAY")) > 1)
+    options(editor = 'gvim -f -c "set ft=r"')
+  else
+    options(editor = 'vim -c "set ft=r"')
+  # Load the setwidth library:
+  library(setwidth)
+  # Load the vimcom library only if R was started by Vim:
+  if(Sys.getenv("VIMRPLUGIN_TMPDIR") != ""){
+    library(vimcom)
+    # See R documentation on Vim buffer even if asking for help in R Console:
+    if(Sys.getenv("VIM_PANE") != "")
+      options(help_type = "text", pager = vim.pager)
+  }
 }
-.adjustWidthCallBack <- addTaskCallback(.adjustWidth)
-
 try(library(ggplot2,quietly=TRUE),silent=TRUE)
 try(library(scales,quietly=TRUE),silent=TRUE)
-try(library(data.table),silent=TRUE)
+try(library(data.table,quietly=TRUE),silent=TRUE)
 try(library(RColorBrewer,quietly=TRUE),silent=TRUE)
 try(library(dichromat,quietly=TRUE),silent=TRUE)
-
 options(datatable.alloccol=1000)
 options(datatable.allocwarn=FALSE)
 
@@ -94,16 +120,17 @@ invisible(addTaskCallback(.undistract(60)))
 .Last <- function() {
   if (!any(commandArgs()=='--no-readline') && interactive()){
     require(utils)
-    try(savehistory(Sys.getenv("R_HISTFILE")))
+    file.1 <- tempfile('temphist')
+    savehistory(file.1)
+    num.new.hist.lines <- as.numeric(
+        strsplit(system(sprintf("wc -l %s", file.1), intern=TRUE), " ")[[1]][1])
+    num.old.hist.lines <- as.numeric(strsplit(system(
+        sprintf("wc -l %s", Sys.getenv("R_HISTFILE")),
+        intern=TRUE), " ")[[1]][1])
+
+    if (num.new.hist.lines > num.old.hist.lines) {
+      try(savehistory(Sys.getenv("R_HISTFILE")))
+    }
   }
 }
-.savehist <- function(expr,
-                      value, ok, visible) {
-  if (!any(commandArgs()=='--no-readline') && interactive()){
-    require(utils)
-    try(savehistory(Sys.getenv("R_HISTFILE")))
-  }
-  return(TRUE)
-}
-invisible(addTaskCallback(.savehist))
 

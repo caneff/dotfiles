@@ -59,6 +59,9 @@ if [ -f ~/.bash_aliases ]; then
 fi
 
 
+export GOPATH=$HOME/go
+export GOBIN=$GOPATH/bin
+export PATH=$GOBIN:$PATH
 
 
 export JAR=/usr/local/buildtools/java/jdk-64/bin/jar
@@ -83,15 +86,6 @@ if [ -f ~/.bash_aliases_local ]; then
     source ~/.bash_aliases_local
 fi
 
-
-
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-fi
-
 # undistract-me stuff
 LONG_RUNNING_PREEXEC_LOCATION=$HOME/git/undistract-me/preexec.bash
 . ~/git/undistract-me/long-running.bash
@@ -102,4 +96,33 @@ notify_when_long_running_commands_finish_install
 
 
 
-
+# Lines added by the Vim-R-plugin command :RpluginConfig (2014-Aug-18 07:44):
+# Change the TERM environment variable (to get 256 colors) and make Vim
+# connecting to X Server even if running in a terminal emulator (to get
+# dynamic update of syntax highlight and Object Browser):
+if [ "$TERM" = "xterm" ] || [ "$TERM" = "xterm-256color" ]
+then
+    export TERM=xterm-256color
+    export HAS_256_COLORS=yes
+fi
+if [ "$TERM" = "screen" ] && [ "$HAS_256_COLORS" = "yes" ]
+then
+    export TERM=screen-256color
+fi
+if [ "x$DISPLAY" != "x" ]
+then
+    alias vim="gvim --servername VIM"
+    if [ "$HAS_256_COLORS" = "yes" ]
+    then
+        function tvim(){ tmux new-session "TERM=screen-256color gvim --servername VIM $@" ; }
+    else
+        function tvim(){ tmux new-session "gvim --servername VIM $@" ; }
+    fi
+else
+    if [ "$HAS_256_COLORS" = "yes" ]
+    then
+        function tvim(){ tmux new-session "TERM=screen-256color gvim $@" ; }
+    else
+        function tvim(){ tmux new-session "gvim $@" ; }
+    fi
+fi
