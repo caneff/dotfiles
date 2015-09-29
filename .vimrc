@@ -212,7 +212,7 @@ au BufEnter * silent! lcd %:p:h
 au BufRead,BufNewFile *.go set nolist
 
 " Installation instructions:
-" https://powerline.readthedocs.org/en/latest/installation/linux.html#font-installation
+" https://github.com/powerline/fonts
 set guifont=Inconsolata\ for\ Powerline\ 16
 
 let g:omni_sql_no_default_maps = 1
